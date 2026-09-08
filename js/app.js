@@ -23,11 +23,11 @@
   };
 
   var ELS = {};
-  ["themeToggle", "compareScreen", "resultScreen", "findBtn", "exampleBtn", "editBtn",
-   "fileInput", "textLeft", "textRight", "countLeft", "countRight", "metaLeft", "metaRight",
-   "settingsBtn", "settingsPanel", "optsBadge", "diffBody", "diffScroll", "diffRegion",
-   "precisionSel", "langSel", "hideUnchangedBtn", "wrapBtn", "statAdd", "statDel", "statSame",
-   "modeNote", "dropVeil"]
+  ["themeToggle", "findBtn", "exampleBtn", "fileInput", "textLeft", "textRight",
+   "comparingLabel", "settingsPanel", "settingsWrap1", "settingsWrap2",
+   "settingsBtn1", "settingsBtn2", "optsBadge1", "optsBadge2", "diffBody", "diffScroll",
+   "diffRegion", "langSel", "hideUnchangedBtn", "wrapBtn", "statAdd", "statDel", "statSame",
+   "legendChip", "modeNote", "dropVeil", "resultToolbar", "resultFiles", "comparePlaceholder"]
     .forEach(function (id) { ELS[id] = $("#" + id); });
   ELS.countLeft = $("[data-count='left']");
   ELS.countRight = $("[data-count='right']");
@@ -35,9 +35,10 @@
   ELS.metaRight = $("[data-meta='right']");
   ELS.rfnLeft = $("[data-rfn='left']");
   ELS.rfnRight = $("[data-rfn='right']");
-  ELS.overlay = $("#comparingOverlay");
-  ELS.comparingLabel = $("#comparingLabel");
   ELS.dirtyBadge = $("#dirtyBadge");
+  ELS.settingsBtns = [ELS.settingsBtn1, ELS.settingsBtn2];
+  ELS.optsBadges = [ELS.optsBadge1, ELS.optsBadge2];
+  ELS.overlay = $("#comparingOverlay");
 
   var DEFAULT_OPTS = {
     ignoreWhitespace: false, ignoreCase: false, ignoreLineEndings: false,
@@ -48,7 +49,7 @@
   var state = {
     opts: Object.assign({}, DEFAULT_OPTS, Store.get("dc-opts", {})),
     precision: Store.get("dc-precision", "smart"),
-    lang: Store.get("dc-lang", "auto"),
+    lang: Store.get("dc-lang", "plaintext"),
     view: Store.get("dc-view", "side"),
     wrap: Store.get("dc-wrap", true),
     hideUnchanged: Store.get("dc-hide", true),
@@ -154,8 +155,15 @@
     el.textContent = meta[side] ? meta[side].name + " \u00b7 " + fmtBytes(meta[side].size) : "";
   }
 
+  function anyActiveOpt() {
+    var k;
+    for (k in state.opts) if (state.opts[k]) return true;
+    return state.lang !== "plaintext";
+  }
+
   function optionBadge() {
-    ELS.optsBadge.hidden = !Object.keys(state.opts).some(function (k) { return state.opts[k]; });
+    var on = anyActiveOpt();
+    ELS.optsBadges.forEach(function (b) { b.hidden = !on; });
   }
 
   function setOpt(key, val) {
@@ -176,6 +184,8 @@
     if (o.transformLower) parts.push("text lowercased");
     if (o.transformSort) parts.push("lines sorted alphabetically");
     if (o.transformBreaks) parts.push("line breaks replaced with spaces");
+    if (state.lang === "auto") parts.push("language auto-detected");
+    else if (state.lang !== "plaintext") parts.push("language: " + state.lang);
     return parts.join(", ");
   }
 
@@ -396,13 +406,20 @@
 
   function diffRuns(a, b, charMode) {
     var parts = charMode ? Diff.diffChars(a, b) : Diff.diffWordsWithSpace(a, b);
-    var ar = [], br = [], i, p, posA = 0, posB = 0;
+    var ar = [], br = [], i, p, len, posA = 0, posB = 0;
     for (i = 0; i < parts.length; i++) {
       p = parts[i];
-      if (p.removed) ar.push({ s: posA, e: posA + p.value.length });
-      else if (p.added) br.push({ s: posB, e: posB + p.value.length });
-      if (!p.removed) posA += p.value.length;
-      if (!p.added) posB += p.value.length;
+      len = p.value.length;
+      if (p.removed) {
+        ar.push({ s: posA, e: posA + len });
+        posA += len;
+      } else if (p.added) {
+        br.push({ s: posB, e: posB + len });
+        posB += len;
+      } else {
+        posA += len;
+        posB += len;
+      }
     }
     if (state.opts.ignoreWhitespace) {
       var fa = [], fb = [], k;
@@ -700,6 +717,7 @@
     ELS.statAdd.hidden = !adds;
     ELS.statDel.hidden = !dels;
     ELS.statSame.hidden = adds > 0 || dels > 0;
+    ELS.legendChip.hidden = adds === 0 && dels === 0;
     if (adds) ELS.statAdd.textContent = "+" + adds + " added";
     if (dels) ELS.statDel.textContent = "\u2212" + dels + " removed";
     if (same && !cmp.degenerate) {
@@ -715,16 +733,11 @@
     ELS.rfnRight.textContent = meta.right ? meta.right.name + " \u00b7 " + fmtBytes(meta.right.size) : "pasted text";
   }
 
-  function showResults() {
+  function revealResults() {
+    ELS.comparePlaceholder.hidden = true;
+    ELS.resultToolbar.hidden = false;
+    ELS.resultFiles.hidden = false;
     setFileNames();
-    ELS.compareScreen.hidden = true;
-    ELS.resultScreen.hidden = false;
-    window.scrollTo(0, 0);
-  }
-
-  function showCompare() {
-    ELS.resultScreen.hidden = true;
-    ELS.compareScreen.hidden = false;
   }
 
   function ensureSegs() {
@@ -780,7 +793,7 @@
         state.compared = true;
         ELS.dirtyBadge.hidden = true;
         if (opts.overlay) ELS.overlay.hidden = true;
-        if (opts.show) showResults();
+        if (opts.reveal) revealResults();
         renderResults();
       });
     }).catch(function () {
@@ -821,46 +834,101 @@
       updateCounters();
       if (state.compared) {
         ELS.dirtyBadge.hidden = false;
-        ELS.dirtyBadge.textContent = "Files changed \u2014 press Find difference to recompare";
+        ELS.dirtyBadge.textContent = "Files changed \u2014 results update automatically";
         scheduleRefresh();
       }
     };
     reader.readAsText(file);
   }
 
+  /* ---------------- options popover (dual anchor, shared panel) ---------------- */
+
+  var settingsOpen = false;
+  var settingsAnchor = null;
+
+  function setPop(open, btn) {
+    settingsOpen = open;
+    settingsAnchor = open ? btn : null;
+    ELS.settingsPanel.hidden = !open;
+    ELS.settingsBtns.forEach(function (b) {
+      b.setAttribute("aria-expanded", String(open && b === btn));
+    });
+  }
+
+  function gearClick(btn, wrap) {
+    if (settingsOpen && settingsAnchor === btn) {
+      setPop(false, btn);
+      return;
+    }
+    if (wrap !== ELS.settingsPanel.parentNode) {
+      wrap.appendChild(ELS.settingsPanel);
+    }
+    setPop(true, btn);
+  }
+
   function wireSettings() {
+    ELS.settingsBtns.forEach(function (btn, i) {
+      var wrap = i === 0 ? ELS.settingsWrap1 : ELS.settingsWrap2;
+      btn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        gearClick(btn, wrap);
+      });
+    });
     $$("#settingsPanel input[type=checkbox]").forEach(function (b) {
       b.checked = !!state.opts[b.dataset.opt];
       b.addEventListener("change", function () { setOpt(b.dataset.opt, b.checked); });
     });
-    optionBadge();
-    var popOpen = false;
-    function setPop(v) {
-      popOpen = v;
-      ELS.settingsPanel.hidden = !v;
-      ELS.settingsBtn.setAttribute("aria-expanded", String(v));
-    }
-    ELS.settingsBtn.addEventListener("click", function (e) {
-      e.stopPropagation();
-      setPop(!popOpen);
+    ELS.langSel.addEventListener("change", function () {
+      state.lang = ELS.langSel.value;
+      Store.set("dc-lang", state.lang);
+      optionBadge();
+      if (cmp) renderResults();
     });
+    optionBadge();
     document.addEventListener("click", function (e) {
-      if (popOpen && !ELS.settingsPanel.contains(e.target)) setPop(false);
+      if (!settingsOpen) return;
+      var inBtn = ELS.settingsBtns.some(function (b) { return b === e.target || b.contains(e.target); });
+      var inPanel = ELS.settingsPanel === e.target || ELS.settingsPanel.contains(e.target);
+      if (!inBtn && !inPanel) setPop(false, settingsAnchor);
     });
     document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && popOpen) setPop(false);
+      if (e.key === "Escape" && settingsOpen) setPop(false, settingsAnchor);
+    });
+  }
+
+  /* ---------------- controls ---------------- */
+
+  function updateToggles() {
+    ELS.hideUnchangedBtn.classList.toggle("on", state.hideUnchanged);
+    ELS.hideUnchangedBtn.setAttribute("aria-pressed", String(state.hideUnchanged));
+    ELS.wrapBtn.classList.toggle("on", state.wrap);
+    ELS.wrapBtn.setAttribute("aria-pressed", String(state.wrap));
+  }
+
+  function wireSeg(container, prop, storageKey) {
+    var btns = container.querySelectorAll("button");
+    btns.forEach(function (b) {
+      var val = b.dataset.view || b.dataset.precision;
+      b.classList.toggle("active", state[prop] === val);
+      b.addEventListener("click", function () {
+        state[prop] = val;
+        Store.set(storageKey, val);
+        btns.forEach(function (x) {
+          x.classList.toggle("active", x === b);
+        });
+        if (cmp) renderResults();
+      });
     });
   }
 
   function wireMain() {
-    ELS.findBtn.addEventListener("click", function () { runCompare({ overlay: true, show: true }); });
+    ELS.findBtn.addEventListener("click", function () { runCompare({ overlay: true, reveal: true }); });
     ELS.exampleBtn.addEventListener("click", function () {
       ELS.textLeft.value = '{\n  "orderId": "K1000486",\n  "skuCount": 4,\n  "discount": 20.00,\n  "shipping": 1.11,\n  "subtotal": 21.11,\n  "paid": false\n}';
       ELS.textRight.value = '{\n  "orderId": "K1000486",\n  "skuCount": 4,\n  "discount": 20.00,\n  "shipping": 3.56,\n  "subtotal": 23.56,\n  "paid": true\n}';
       updateCounters();
-      runCompare({ overlay: true, show: true });
+      runCompare({ overlay: true, reveal: true });
     });
-    ELS.editBtn.addEventListener("click", showCompare);
 
     [ELS.textLeft, ELS.textRight].forEach(function (ta) {
       ta.addEventListener("input", function () {
@@ -874,7 +942,7 @@
       ta.addEventListener("keydown", function (e) {
         if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
           e.preventDefault();
-          runCompare({ overlay: true, show: true });
+          runCompare({ overlay: true, reveal: true });
         }
       });
     });
@@ -885,26 +953,8 @@
       Store.set("dc-theme", next);
     });
 
-    ELS.precisionSel.addEventListener("change", function () {
-      state.precision = ELS.precisionSel.value;
-      Store.set("dc-precision", state.precision);
-      if (cmp) renderResults();
-    });
-
-    ELS.langSel.addEventListener("change", function () {
-      state.lang = ELS.langSel.value;
-      Store.set("dc-lang", state.lang);
-      if (cmp) renderResults();
-    });
-
-    $$(".seg-btn").forEach(function (b) {
-      b.addEventListener("click", function () {
-        state.view = b.dataset.view;
-        Store.set("dc-view", state.view);
-        $$(".seg-btn").forEach(function (x) { x.classList.toggle("active", x === b); });
-        if (cmp) renderResults();
-      });
-    });
+    wireSeg($("#viewSeg"), "view", "dc-view");
+    wireSeg($("#precisionSeg"), "precision", "dc-precision");
 
     ELS.hideUnchangedBtn.addEventListener("click", function () {
       state.hideUnchanged = !state.hideUnchanged;
@@ -937,12 +987,7 @@
     wireDragDrop();
   }
 
-  function updateToggles() {
-    ELS.hideUnchangedBtn.classList.toggle("on", state.hideUnchanged);
-    ELS.hideUnchangedBtn.setAttribute("aria-pressed", String(state.hideUnchanged));
-    ELS.wrapBtn.classList.toggle("on", state.wrap);
-    ELS.wrapBtn.setAttribute("aria-pressed", String(state.wrap));
-  }
+  /* ---------------- drag and drop ---------------- */
 
   function wireDragDrop() {
     var depth = 0;
@@ -1003,17 +1048,21 @@
     });
   }
 
+  /* ---------------- init ---------------- */
+
   function initControls() {
-    ELS.precisionSel.value = state.precision;
     ELS.langSel.value = state.lang;
-    var seg = state.view;
-    $$(".seg-btn").forEach(function (b) { b.classList.toggle("active", b.dataset.view === seg); });
     updateToggles();
+  }
+
+  function init() {
+    var theme = document.documentElement.getAttribute("data-theme") || "dark";
+    document.documentElement.setAttribute("data-theme", theme);
+    initControls();
+    updateCounters();
   }
 
   wireSettings();
   wireMain();
-  initControls();
-  updateCounters();
-  showCompare();
+  init();
 })();
