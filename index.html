@@ -120,6 +120,7 @@
         <div class="pane-head">
           <span class="pane-title">Original text</span>
           <button class="btn btn-mini file-btn" type="button" data-pane="left">Open file</button>
+          <button class="btn btn-mini clear-btn" type="button" data-clear="left" title="Clear this box" disabled>Clear</button>
           <span class="file-meta" data-meta="left"></span>
         </div>
         <textarea id="textLeft" class="editor" spellcheck="false" autocorrect="off" autocapitalize="off" placeholder="Paste the original text here, or drop a file onto this panel."></textarea>
@@ -131,6 +132,7 @@
         <div class="pane-head">
           <span class="pane-title">Changed text</span>
           <button class="btn btn-mini file-btn" type="button" data-pane="right">Open file</button>
+          <button class="btn btn-mini clear-btn" type="button" data-clear="right" title="Clear this box" disabled>Clear</button>
           <span class="file-meta" data-meta="right"></span>
         </div>
         <textarea id="textRight" class="editor" spellcheck="false" autocorrect="off" autocapitalize="off" placeholder="Paste the changed text here, or drop a file onto this panel."></textarea>
@@ -215,6 +217,7 @@
       </button>
       <span class="compare-hint">or press <kbd>Ctrl</kbd> + <kbd>Enter</kbd></span>
       <span class="spacer"></span>
+      <button id="clearAllBtn" class="btn btn-ghost clear-btn" type="button" title="Clear both boxes" disabled>Clear all</button>
       <button id="exampleBtn" class="btn btn-ghost" type="button">Try example</button>
     </div>
 

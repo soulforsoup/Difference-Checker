@@ -39,6 +39,8 @@
   ELS.settingsBtns = [ELS.settingsBtn1, ELS.settingsBtn2];
   ELS.optsBadges = [ELS.optsBadge1, ELS.optsBadge2];
   ELS.overlay = $("#comparingOverlay");
+  ELS.clearBtns = { left: $("[data-clear='left']"), right: $("[data-clear='right']") };
+  ELS.clearAllBtn = $("#clearAllBtn");
 
   var DEFAULT_OPTS = {
     ignoreWhitespace: false, ignoreCase: false, ignoreLineEndings: false,
@@ -141,6 +143,11 @@
   function updateCounters() {
     setCount(ELS.countLeft, ELS.textLeft.value);
     setCount(ELS.countRight, ELS.textRight.value);
+    var hasLeft = ELS.textLeft.value.length > 0;
+    var hasRight = ELS.textRight.value.length > 0;
+    ELS.clearBtns.left.disabled = !hasLeft;
+    ELS.clearBtns.right.disabled = !hasRight;
+    ELS.clearAllBtn.disabled = !hasLeft && !hasRight;
   }
 
   function fmtBytes(n) {
@@ -740,6 +747,50 @@
     setFileNames();
   }
 
+  function resetResults() {
+    seqToken++;
+    renderToken++;
+    state.comparing = false;
+    state.compared = false;
+    cmp = null;
+    expandedRuns = {};
+    ELS.overlay.hidden = true;
+    ELS.resultToolbar.hidden = true;
+    ELS.resultFiles.hidden = true;
+    ELS.comparePlaceholder.hidden = false;
+    ELS.dirtyBadge.hidden = true;
+    ELS.modeNote.hidden = true;
+    ELS.diffBody.textContent = "";
+    ELS.diffBody.style.removeProperty("--cw-l");
+    ELS.diffBody.style.removeProperty("--cw-r");
+    ELS.diffBody.style.removeProperty("--cw-u");
+  }
+
+  function clearPane(side) {
+    var ta = side === "left" ? ELS.textLeft : ELS.textRight;
+    ta.value = "";
+    setFileMeta(side, null);
+    updateCounters();
+    if (ELS.textLeft.value === "" && ELS.textRight.value === "") {
+      resetResults();
+    } else if (state.compared) {
+      ELS.dirtyBadge.hidden = false;
+      ELS.dirtyBadge.textContent = "Differences update automatically as you type\u2026";
+      scheduleRefresh();
+    }
+    ta.focus();
+  }
+
+  function clearAll() {
+    ELS.textLeft.value = "";
+    ELS.textRight.value = "";
+    setFileMeta("left", null);
+    setFileMeta("right", null);
+    updateCounters();
+    resetResults();
+    ELS.textLeft.focus();
+  }
+
   function ensureSegs() {
     if (!cmp) return Promise.resolve();
     var want = hlKey();
@@ -983,6 +1034,10 @@
       if (f) setFile(ELS.fileInput.dataset.side === "right" ? "right" : "left", f);
       ELS.fileInput.value = "";
     });
+
+    ELS.clearBtns.left.addEventListener("click", function () { clearPane("left"); });
+    ELS.clearBtns.right.addEventListener("click", function () { clearPane("right"); });
+    ELS.clearAllBtn.addEventListener("click", clearAll);
 
     wireDragDrop();
   }

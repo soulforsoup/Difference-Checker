@@ -415,6 +415,15 @@ kbd {
 [data-theme="dark"] .btn-mini { color: #3fb950; }
 .btn-mini:hover { background: var(--panel-2); border-color: var(--border); }
 
+.btn.clear-btn { color: var(--dim); }
+.btn.clear-btn:hover:not(:disabled) {
+  color: var(--del-text);
+  border-color: color-mix(in srgb, var(--del-text) 45%, transparent);
+  background: color-mix(in srgb, var(--del-text) 8%, var(--surface));
+}
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn:disabled:hover { box-shadow: none; background: var(--surface); color: var(--dim); border-color: var(--border); }
+
 .btn-toggle { color: var(--dim); border-color: var(--border); background: var(--surface); font-weight: 550; }
 .btn-toggle:hover { color: var(--text); }
 .btn-toggle.on {
