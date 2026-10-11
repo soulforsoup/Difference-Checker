@@ -1,247 +1,151 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="dark light">
-<title>Difference Checker — compare text online</title>
-<meta name="description" content="A free, private, in-browser text comparison tool. Find the difference between two text files with side-by-side and unified views.">
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
-<link rel="stylesheet" href="css/styles.css">
-<script>
-(function(){
-  var saved = null;
-  try { saved = localStorage.getItem('dc-theme'); } catch (e) {}
-  var dark = saved ? saved === 'dark'
-    : (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? false : true;
-  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-})();
-</script>
-</head>
-<body>
-<div class="page">
-
-  <header class="topbar">
-    <div class="brand">
-      <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
-        <rect x="3" y="7" width="12" height="26" rx="2" fill="#8b949e"/>
-        <rect x="25" y="7" width="12" height="26" rx="2" fill="#8b949e"/>
-        <rect x="5.5" y="17.5" width="7" height="5" rx="1" fill="#e5534b"/>
-        <rect x="27.5" y="17.5" width="7" height="5" rx="1" fill="#2da44e"/>
-        <rect x="9" y="13" width="3" height="7" rx="1.5" fill="#24292f"/>
-        <rect x="28" y="20" width="3" height="7" rx="1.5" fill="#eaeef2"/>
-      </svg>
-      <span class="brand-name">Difference&nbsp;Checker</span>
-      <span class="brand-tag">static &amp; private — runs in your browser</span>
-    </div>
-    <div class="topbar-actions">
-      <button id="themeToggle" class="icon-btn" type="button" title="Toggle light / dark theme" aria-label="Toggle theme">
-        <svg class="ico-moon" viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M12.1 3a9 9 0 1 0 8.9 11.4A7.5 7.5 0 0 1 12.1 3Z"/></svg>
-        <svg class="ico-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-          <circle cx="12" cy="12" r="4.2"/>
-          <path d="M12 1.8v2.2M12 20v2.2M1.8 12H4M20 12h2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/>
-        </svg>
-      </button>
-    </div>
-  </header>
-
-  <main id="app">
-
-    <!-- ===================== RESULTS (hidden until first compare) ===================== -->
-    <section id="resultsBlock" class="results-block" aria-label="Comparison results">
-
-      <div id="resultToolbar" class="result-toolbar" hidden>
-        <div class="settings-wrap" id="settingsWrap2">
-          <button id="settingsBtn2" class="btn btn-ghost btn-ico" type="button" aria-expanded="false" aria-controls="settingsPanel">
-            <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M19.4 13a7.6 7.6 0 0 0 .1-1c0-.34-.03-.67-.1-1l2.1-1.65a.5.5 0 0 0 .12-.64l-2-3.46a.5.5 0 0 0-.61-.22l-2.49 1a7.3 7.3 0 0 0-1.73-1L14.3 2.4a.5.5 0 0 0-.5-.4h-4a.5.5 0 0 0-.5.4l-.38 2.62a7.3 7.3 0 0 0-1.73 1l-2.49-1a.5.5 0 0 0-.61.22l-2 3.46a.5.5 0 0 0 .12.64L4.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.65a.5.5 0 0 0-.12.64l2 3.46c.13.23.4.32.61.22l2.49-1c.52.4 1.1.74 1.73 1l.38 2.63a.5.5 0 0 0 .5.4h4a.5.5 0 0 0 .5-.4l.38-2.63a7.3 7.3 0 0 0 1.73-1l2.49 1c.22.1.48 0 .61-.22l2-3.46a.5.5 0 0 0-.12-.64L19.4 13ZM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z"/></svg>
-            Options
-            <span id="optsBadge2" class="badge-dot" hidden></span>
-          </button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f7f8f5" />
+    <meta name="description" content="Compare text and code privately in your browser." />
+    <title>Text Compare — a clear view of what changed</title>
+    <script type="module" crossorigin src="./assets/index-DATSC_3A.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-DPmo_Mmn.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="./" aria-label="Text Compare home">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span>text<span class="brand-accent">compare</span></span>
+        </a>
+        <div class="topbar-right">
+          <span class="privacy-pill"><span class="privacy-dot"></span> Private by design</span>
+          <button class="icon-button" id="theme-toggle" type="button" aria-label="Switch color theme" title="Switch color theme"><span class="theme-icon" aria-hidden="true">◐</span></button>
+          <button class="library-top" id="open-library" type="button"><span aria-hidden="true">▤</span> Library <span id="library-count" class="tiny-count">0</span></button>
         </div>
+      </header>
 
-        <div class="seg" id="viewSeg" aria-label="Result view">
-          <button class="seg-btn" data-view="side" type="button">Side by side</button>
-          <button class="seg-btn" data-view="unified" type="button">Unified</button>
-        </div>
-
-        <div class="seg" id="precisionSeg" aria-label="Highlight precision">
-          <button class="seg-btn seg-btn-lg" data-precision="smart" type="button">Smart</button>
-          <button class="seg-btn seg-btn-lg" data-precision="word" type="button">Word</button>
-          <button class="seg-btn seg-btn-lg" data-precision="char" type="button">Char</button>
-        </div>
-
-        <span class="tl-flex"></span>
-
-        <div class="tl-toggles">
-          <button id="hideUnchangedBtn" class="btn btn-toggle" type="button" aria-pressed="false">Hide unchanged lines</button>
-          <button id="wrapBtn" class="btn btn-toggle" type="button" aria-pressed="true" title="Disable line wrap to scroll long lines horizontally">Line wrap</button>
-        </div>
-
-        <div class="result-stats">
-          <span id="statSame" class="stat stat-ok" hidden></span>
-          <span id="statAdd" class="stat stat-add" hidden></span>
-          <span id="statDel" class="stat stat-del" hidden></span>
-          <span id="legendChip" class="legend-chip" hidden>
-            <span class="legend-item"><i class="sw sw-del"></i>removed</span>
-            <span class="legend-item"><i class="sw sw-add"></i>added</span>
-          </span>
-        </div>
-
-        <span id="dirtyBadge" class="dirty-badge" hidden>Results are behind — they update as you type</span>
-      </div>
-
-      <div class="result-files" id="resultFiles" hidden>
-        <span class="result-file-name l" data-rfn="left"></span>
-        <span class="result-file-name r" data-rfn="right"></span>
-        <span class="result-spacer"></span>
-        <span class="result-mode-note" id="modeNote" hidden></span>
-      </div>
-
-      <div id="diffRegion" class="diff-region">
-        <div id="diffScroll" class="diff-scroll">
-          <div id="diffBody"></div>
-        </div>
-        <div id="comparePlaceholder" class="compare-placeholder">
-          <svg viewBox="0 0 48 48" width="34" height="34" aria-hidden="true">
-            <rect x="6" y="8" width="14" height="32" rx="2.5" fill="currentColor" opacity=".28"/>
-            <rect x="28" y="8" width="14" height="32" rx="2.5" fill="currentColor" opacity=".28"/>
-            <rect x="8.5" y="20" width="9" height="6" rx="1.2" fill="#e5534b"/>
-            <rect x="30.5" y="20" width="9" height="6" rx="1.2" fill="#2da44e"/>
-          </svg>
-          <strong>Your comparison appears here</strong>
-          <span>Paste original and changed text below, then click Find difference (or press <kbd>Ctrl</kbd>&nbsp;+&nbsp;<kbd>Enter</kbd>).</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===================== EDITORS ===================== -->
-    <div class="panes">
-      <section class="pane" id="paneLeft">
-        <div class="pane-head">
-          <span class="pane-title">Original text</span>
-          <button class="btn btn-mini file-btn" type="button" data-pane="left">Open file</button>
-          <button class="btn btn-mini clear-btn" type="button" data-clear="left" title="Clear this box" disabled>Clear</button>
-          <span class="file-meta" data-meta="left"></span>
-        </div>
-        <textarea id="textLeft" class="editor" spellcheck="false" autocorrect="off" autocapitalize="off" placeholder="Paste the original text here, or drop a file onto this panel."></textarea>
-        <div class="pane-foot"><span data-count="left"></span></div>
-        <div class="drop-zone" data-drop="left" hidden><div class="drop-inner"><strong>Drop a file to compare</strong><span>Plain text, code, logs, CSV, Markdown…</span></div></div>
-      </section>
-
-      <section class="pane" id="paneRight">
-        <div class="pane-head">
-          <span class="pane-title">Changed text</span>
-          <button class="btn btn-mini file-btn" type="button" data-pane="right">Open file</button>
-          <button class="btn btn-mini clear-btn" type="button" data-clear="right" title="Clear this box" disabled>Clear</button>
-          <span class="file-meta" data-meta="right"></span>
-        </div>
-        <textarea id="textRight" class="editor" spellcheck="false" autocorrect="off" autocapitalize="off" placeholder="Paste the changed text here, or drop a file onto this panel."></textarea>
-        <div class="pane-foot"><span data-count="right"></span></div>
-        <div class="drop-zone" data-drop="right" hidden><div class="drop-inner"><strong>Drop a file to compare</strong><span>Plain text, code, logs, CSV, Markdown…</span></div></div>
-      </section>
-    </div>
-
-    <div class="compare-actions">
-      <div class="settings-wrap" id="settingsWrap1">
-        <button id="settingsBtn1" class="btn btn-ghost btn-ico" type="button" aria-expanded="false" aria-controls="settingsPanel">
-          <svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M19.4 13a7.6 7.6 0 0 0 .1-1c0-.34-.03-.67-.1-1l2.1-1.65a.5.5 0 0 0 .12-.64l-2-3.46a.5.5 0 0 0-.61-.22l-2.49 1a7.3 7.3 0 0 0-1.73-1L14.3 2.4a.5.5 0 0 0-.5-.4h-4a.5.5 0 0 0-.5.4l-.38 2.62a7.3 7.3 0 0 0-1.73 1l-2.49-1a.5.5 0 0 0-.61.22l-2 3.46a.5.5 0 0 0 .12.64L4.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.65a.5.5 0 0 0-.12.64l2 3.46c.13.23.4.32.61.22l2.49-1c.52.4 1.1.74 1.73 1l.38 2.63a.5.5 0 0 0 .5.4h4a.5.5 0 0 0 .5-.4l.38-2.63a7.3 7.3 0 0 0 1.73-1l2.49 1c.22.1.48 0 .61-.22l2-3.46a.5.5 0 0 0-.12-.64L19.4 13ZM12 15.5A3.5 3.5 0 1 1 12 8a3.5 3.5 0 0 1 0 7.5Z"/></svg>
-          Options
-          <span id="optsBadge1" class="badge-dot" hidden></span>
-        </button>
-
-        <!-- shared options panel (re-parented under whichever gear opened it) -->
-        <div id="settingsPanel" class="settings-pop" hidden>
-          <div class="settings-group">
-            <div class="settings-head">Ignore</div>
-            <label class="opt"><input type="checkbox" data-opt="ignoreWhitespace"><span>Hide whitespace changes</span></label>
-            <label class="opt"><input type="checkbox" data-opt="ignoreCase"><span>Ignore case</span></label>
-            <label class="opt"><input type="checkbox" data-opt="ignoreLineEndings"><span>Ignore line endings</span></label>
-            <label class="opt"><input type="checkbox" data-opt="ignoreQuotes"><span>Ignore quotation marks</span></label>
-            <label class="opt"><input type="checkbox" data-opt="ignoreDashes"><span>Ignore dashes</span></label>
+      <main class="workspace">
+        <section class="intro-row" aria-labelledby="page-title">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-line"></span> A clearer way to review text</div>
+            <h1 id="page-title">See what <em>changed.</em></h1>
+            <p class="intro-copy">Compare drafts, code, and documents side by side. Your text stays right here in this browser.</p>
           </div>
-          <div class="settings-group">
-            <div class="settings-head">Transform text</div>
-            <label class="opt"><input type="checkbox" data-opt="transformTrim"><span>Trim whitespace</span></label>
-            <label class="opt"><input type="checkbox" data-opt="transformLower"><span>Transform to lowercase</span></label>
-            <label class="opt"><input type="checkbox" data-opt="transformSort"><span>Sort lines alphabetically</span></label>
-            <label class="opt"><input type="checkbox" data-opt="transformBreaks"><span>Replace line breaks with spaces</span></label>
-          </div>
-          <div class="settings-group">
-            <div class="settings-head">Display</div>
-            <label class="opt opt-select">Syntax language
-              <select id="langSel">
-                <option value="plaintext">Plain text (no colors)</option>
-                <option value="auto">Auto-detect</option>
-                <optgroup label="Code">
-                  <option value="javascript">JavaScript</option>
-                  <option value="typescript">TypeScript</option>
-                  <option value="python">Python</option>
-                  <option value="java">Java</option>
-                  <option value="csharp">C#</option>
-                  <option value="cpp">C / C++</option>
-                  <option value="go">Go</option>
-                  <option value="rust">Rust</option>
-                  <option value="ruby">Ruby</option>
-                  <option value="php">PHP</option>
-                  <option value="kotlin">Kotlin</option>
-                  <option value="swift">Swift</option>
-                </optgroup>
-                <optgroup label="Markup &amp; data">
-                  <option value="html">HTML</option>
-                  <option value="css">CSS</option>
-                  <option value="json">JSON</option>
-                  <option value="xml">XML</option>
-                  <option value="yaml">YAML</option>
-                  <option value="ini">INI / TOML</option>
-                  <option value="sql">SQL</option>
-                </optgroup>
-                <optgroup label="Other">
-                  <option value="bash">Bash / Shell</option>
-                  <option value="markdown">Markdown</option>
-                  <option value="diff">Diff</option>
-                  <option value="http">HTTP</option>
-                  <option value="dockerfile">Dockerfile</option>
-                  <option value="makefile">Makefile</option>
-                </optgroup>
-              </select>
-            </label>
-            <div class="settings-note">When a language is chosen, unchanged lines are colorized — changed lines stay pure red / green.</div>
-          </div>
-          <div class="settings-note">Ignoring or transforming only affects how texts are compared and displayed below — your pasted originals are never altered.</div>
-        </div>
-      </div>
+          <div class="intro-note"><span class="note-spark" aria-hidden="true">✳</span><span>No upload. No account.<br /><strong>Just a good comparison.</strong></span></div>
+        </section>
 
-      <button id="findBtn" class="btn btn-primary btn-lg" type="button">
-        <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M14.7 13.3a5.5 5.5 0 1 0-1.4 1.4l4.5 4.5 1.4-1.4-4.5-4.5ZM10.5 14a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z"/></svg>
-        Find difference
-      </button>
-      <span class="compare-hint">or press <kbd>Ctrl</kbd> + <kbd>Enter</kbd></span>
-      <span class="spacer"></span>
-      <button id="clearAllBtn" class="btn btn-ghost clear-btn" type="button" title="Clear both boxes" disabled>Clear all</button>
-      <button id="exampleBtn" class="btn btn-ghost" type="button">Try example</button>
+        <section class="compare-card" aria-label="Text comparison workspace">
+          <div class="project-bar">
+            <label class="project-title-label" for="comparison-title">COMPARISON</label>
+            <input id="comparison-title" class="project-title" type="text" maxlength="120" value="Untitled comparison" aria-label="Comparison title" />
+            <div class="project-actions">
+              <button id="undo-merge" class="quiet-button" type="button" disabled title="Undo the last merge or text transformation (⌘Z)"><span aria-hidden="true">↶</span> Undo</button>
+              <button id="swap-sides" class="quiet-button" type="button" title="Swap original and changed text"><span aria-hidden="true">⇄</span> Swap</button>
+              <span class="action-divider"></span>
+              <button id="save-comparison" class="quiet-button" type="button" title="Save this comparison to your local library"><span aria-hidden="true">♡</span> Save</button>
+              <button id="share-comparison" class="quiet-button" type="button" title="Copy a link containing this comparison"><span aria-hidden="true">↗</span> Share</button>
+              <div class="menu-wrap">
+                <button id="export-menu-toggle" class="quiet-button" type="button" aria-expanded="false" aria-controls="export-menu"><span aria-hidden="true">↓</span> Export <span class="chevron">⌄</span></button>
+                <div id="export-menu" class="popup-menu" hidden>
+                  <button type="button" data-export="json">Comparison file <small>.json</small></button>
+                  <button type="button" data-export="patch">Unified patch <small>.diff</small></button>
+                  <button type="button" data-export="left">Original text <small>.txt</small></button>
+                  <button type="button" data-export="right">Changed text <small>.txt</small></button>
+                  <button type="button" data-export="print">Print / save as PDF <small>⌘P</small></button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="editor-toolbar">
+            <div class="editor-heading"><span class="step-number">01</span><span>Choose your text</span><span class="editor-helper">Paste, type, or drop a file into either side</span></div>
+            <div class="editor-utility">
+              <label class="live-toggle" for="live-compare"><input id="live-compare" type="checkbox" /><span class="toggle-track"><i></i></span><span>Live compare</span></label>
+              <button id="load-sample" class="text-link" type="button">Load sample</button>
+              <div class="process-wrap">
+                <button id="process-toggle" class="text-link" type="button" aria-expanded="false" aria-controls="process-menu">Process text <span class="chevron">⌄</span></button>
+                <div id="process-menu" class="popup-menu process-menu" hidden>
+                  <label class="menu-select-row">Apply to <select id="process-target"><option value="both">Both sides</option><option value="left">Original</option><option value="right">Changed</option></select></label>
+                  <button type="button" data-transform="lowercase">To lowercase</button>
+                  <button type="button" data-transform="sort">Sort lines alphabetically</button>
+                  <button type="button" data-transform="linebreaks">Replace line breaks with spaces</button>
+                  <button type="button" data-transform="trim">Trim whitespace</button>
+                </div>
+              </div>
+              <button id="clear-all" class="text-link" type="button">Clear all</button>
+            </div>
+          </div>
+
+          <div id="drop-zone" class="editors-grid">
+            <article class="editor-pane" data-side="left">
+              <div class="pane-head">
+                <div class="pane-label-wrap"><span class="side-marker original-marker">A</span><input id="left-name" class="filename" type="text" value="original.txt" maxlength="180" aria-label="Original filename" /><span class="side-caption">ORIGINAL</span></div>
+                <div class="pane-tools"><span id="left-count" class="line-count">0 lines</span><input id="left-file" class="visually-hidden" type="file" accept=".txt,.md,.js,.ts,.jsx,.tsx,.json,.html,.css,.xml,.yaml,.yml,.py,.sh,.sql,.csv,.log,.diff,.java,.go,.rs,.c,.cpp,.h,.toml,.ini,.vue,.svelte,.php,.rb,.swift,.kt,.dart,.ipynb,text/*,application/json" /><button class="mini-button" data-file="left" type="button" title="Open a local text file"><span aria-hidden="true">↥</span> Open file</button><button class="mini-button copy-button" data-copy="left" type="button" title="Copy original text">Copy</button><button class="mini-icon" data-download="left" type="button" aria-label="Download original text" title="Download original text">↓</button><button class="mini-icon clear-side" data-clear="left" type="button" aria-label="Clear original text" title="Clear original text">×</button></div>
+              </div>
+              <div class="textarea-wrap"><textarea id="left-text" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="Original text" placeholder="Paste or type the original text here…"></textarea><div class="drop-overlay" aria-hidden="true"><span>Drop a text file to open</span></div></div>
+              <div class="pane-foot"><span class="foot-hint"><kbd>⌘</kbd><kbd>↵</kbd> to compare</span><span id="left-size">0 characters</span></div>
+            </article>
+
+            <div class="editor-center" aria-hidden="true"><span>vs</span><span class="center-rule"></span></div>
+
+            <article class="editor-pane" data-side="right">
+              <div class="pane-head">
+                <div class="pane-label-wrap"><span class="side-marker changed-marker">B</span><input id="right-name" class="filename" type="text" value="changed.txt" maxlength="180" aria-label="Changed filename" /><span class="side-caption">CHANGED</span></div>
+                <div class="pane-tools"><span id="right-count" class="line-count">0 lines</span><input id="right-file" class="visually-hidden" type="file" accept=".txt,.md,.js,.ts,.jsx,.tsx,.json,.html,.css,.xml,.yaml,.yml,.py,.sh,.sql,.csv,.log,.diff,.java,.go,.rs,.c,.cpp,.h,.toml,.ini,.vue,.svelte,.php,.rb,.swift,.kt,.dart,.ipynb,text/*,application/json" /><button class="mini-button" data-file="right" type="button" title="Open a local text file"><span aria-hidden="true">↥</span> Open file</button><button class="mini-button copy-button" data-copy="right" type="button" title="Copy changed text">Copy</button><button class="mini-icon" data-download="right" type="button" aria-label="Download changed text" title="Download changed text">↓</button><button class="mini-icon clear-side" data-clear="right" type="button" aria-label="Clear changed text" title="Clear changed text">×</button></div>
+              </div>
+              <div class="textarea-wrap"><textarea id="right-text" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="Changed text" placeholder="Paste or type the changed text here…"></textarea><div class="drop-overlay" aria-hidden="true"><span>Drop a text file to open</span></div></div>
+              <div class="pane-foot"><span class="foot-hint">Drop a file anywhere in this panel</span><span id="right-size">0 characters</span></div>
+            </article>
+          </div>
+
+          <details class="options-details" id="options-details">
+            <summary><span class="settings-glyph" aria-hidden="true">☷</span> Comparison settings <span class="options-summary">Precision, formatting, and display</span><span class="summary-chevron">⌄</span></summary>
+            <div class="options-panel">
+              <div class="options-group"><span class="option-label">MATCHING</span><label class="check-option"><input id="ignore-case" type="checkbox" /> Ignore case</label><label class="check-option"><input id="ignore-blank" type="checkbox" /> Ignore blank lines</label><label class="select-option">Whitespace <select id="whitespace"><option value="none">Exact</option><option value="trim">Trim line edges</option><option value="all">Ignore all whitespace</option></select></label></div>
+              <div class="options-group"><span class="option-label">DETAIL</span><label class="select-option">Precision <select id="precision"><option value="smart">Smart</option><option value="word">Word</option><option value="character">Character</option></select></label><label class="select-option">Syntax <select id="language"><option value="plaintext">Plain text</option><option value="javascript">JavaScript</option><option value="typescript">TypeScript</option><option value="json">JSON</option><option value="html">HTML / XML</option><option value="css">CSS</option><option value="python">Python</option><option value="bash">Shell</option><option value="yaml">YAML</option><option value="markdown">Markdown</option><option value="sql">SQL</option><option value="java">Java</option><option value="go">Go</option><option value="rust">Rust</option><option value="c">C</option><option value="cpp">C++</option><option value="csharp">C#</option><option value="ruby">Ruby</option><option value="php">PHP</option><option value="swift">Swift</option><option value="kotlin">Kotlin</option></select></label></div>
+              <div class="options-group display-options"><span class="option-label">DISPLAY</span><label class="check-option"><input id="wrap-lines" type="checkbox" /> Wrap long lines</label><label class="select-option">Text size <select id="font-size"><option value="13">Small</option><option value="14" selected>Medium</option><option value="16">Large</option></select></label></div>
+              <div class="options-group ignore-pattern-group"><label for="ignore-pattern" class="option-label">IGNORE PATTERN <span title="Regular expression applied to each line before matching">ⓘ</span></label><div class="pattern-row"><input id="ignore-pattern" type="text" placeholder="e.g. ^# generated at .*" autocapitalize="off" spellcheck="false" /><button id="clear-pattern" class="mini-icon" type="button" aria-label="Clear ignore pattern">×</button></div></div>
+            </div>
+          </details>
+
+          <div class="compare-footer">
+            <span id="work-status" role="status" aria-live="polite"><span class="status-dot"></span> Ready when you are</span>
+            <button id="compare-now" class="primary-button" type="button"><span class="button-spark" aria-hidden="true">✳</span> Compare text <span class="button-shortcut">⌘ ↵</span></button>
+          </div>
+        </section>
+
+        <section id="results-section" class="results-section" aria-labelledby="results-heading" hidden>
+          <div class="results-heading-row">
+            <div><div class="eyebrow result-eyebrow"><span class="eyebrow-line"></span> Your comparison</div><h2 id="results-heading">A closer look</h2></div>
+            <div class="result-controls">
+              <button id="previous-hunk" class="control-button" type="button" title="Previous change"><span aria-hidden="true">↑</span><span>Previous</span></button><button id="next-hunk" class="control-button" type="button" title="Next change"><span aria-hidden="true">↓</span><span>Next change</span></button>
+              <span class="control-separator"></span>
+              <label class="check-option compact-check"><input id="changes-only" type="checkbox" /> Changes only</label>
+              <label class="check-option compact-check"><input id="hide-whitespace" type="checkbox" /> Hide whitespace changes</label>
+              <button id="collapse-context" class="control-button" type="button" aria-pressed="false"><span aria-hidden="true">⊞</span><span>Collapse context</span></button>
+              <div class="view-switch" role="group" aria-label="Result layout"><button type="button" class="active" data-view="split" aria-pressed="true">Split</button><button type="button" data-view="unified" aria-pressed="false">Unified</button></div>
+            </div>
+          </div>
+          <div id="compare-summary" class="compare-summary"></div>
+          <div id="diff-output" class="diff-output" aria-live="polite"></div>
+          <div class="results-bottom"><span><span class="legend-mark removed-legend">−</span> Removed <span class="legend-mark added-legend">+</span> Added <span class="legend-mark changed-legend">∼</span> Changed</span><span>Use merge arrows to move a hunk across</span></div>
+        </section>
+        <footer class="page-footer"><span>Text Compare <span class="footer-dot">·</span> Runs entirely in your browser</span><span>Made for careful reading <span aria-hidden="true">✳</span></span></footer>
+      </main>
     </div>
 
-    <input type="file" id="fileInput" class="visually-hidden" hidden>
-
-    <div id="comparingOverlay" class="overlay" hidden>
-      <div class="spinner"></div><span id="comparingLabel">Comparing…</span>
-    </div>
-
-  </main>
-
-  <footer class="foot">
-    <span>Difference Checker is a static tool — comparing happens on your device and nothing you paste is ever uploaded.</span>
-    <span class="foot-links"><span class="foot-sep"></span>Built for GitHub Pages · Side-by-side &amp; unified views · Smart / word / character precision</span>
-  </footer>
-
-</div>
-
-<div id="dropVeil" class="drop-veil" hidden>
-  <div class="drop-veil-box"><strong>Drop a file onto either side</strong><br><span class="dim">Left pane loads the original, right pane the changed text</span></div>
-</div>
-
-<script src="js/vendor/diff.min.js"></script>
-<script src="js/vendor/highlight.min.js"></script>
-<script src="js/app.js"></script>
-</body>
+    <dialog id="library-dialog" class="library-dialog">
+      <div class="dialog-head"><div><span class="eyebrow"><span class="eyebrow-line"></span> Stored on this device</span><h2>Your library</h2></div><button class="icon-button dialog-close" type="button" aria-label="Close library">×</button></div>
+      <p class="dialog-copy">Saved comparisons live in this browser only. Export a JSON copy to keep one elsewhere.</p>
+      <div class="library-actions"><button id="import-comparison" class="mini-button" type="button"><span aria-hidden="true">↥</span> Import comparison</button><input id="import-file" class="visually-hidden" type="file" accept=".json,application/json" /></div>
+      <div id="library-list" class="library-list"></div>
+      <div class="dialog-foot"><span>Private to this browser</span><button class="text-link dialog-close" type="button">Done</button></div>
+    </dialog>
+    <dialog id="action-dialog" class="library-dialog action-dialog" aria-labelledby="action-dialog-title" aria-describedby="action-dialog-description">
+      <div class="dialog-head"><div><span id="action-dialog-eyebrow" class="eyebrow"><span class="eyebrow-line"></span> Text Compare</span><h2 id="action-dialog-title">Add a note</h2></div><button class="icon-button" id="action-dialog-x" type="button" aria-label="Close dialog">×</button></div>
+      <p id="action-dialog-description" class="dialog-copy"></p>
+      <div id="action-dialog-field-wrap" class="action-dialog-field"><label id="action-dialog-label" for="action-dialog-text">Note</label><textarea id="action-dialog-text" rows="5"></textarea></div>
+      <div class="action-dialog-actions"><button id="action-dialog-cancel" class="quiet-button" type="button">Cancel</button><button id="action-dialog-confirm" class="primary-button" type="button">Add note</button></div>
+    </dialog>
+    <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+  </body>
 </html>
