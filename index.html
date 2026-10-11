@@ -6,8 +6,16 @@
     <meta name="theme-color" content="#f7f8f5" />
     <meta name="description" content="Compare text and code privately in your browser." />
     <title>Text Compare — a clear view of what changed</title>
-    <script type="module" crossorigin src="./assets/index-DN4tbaX6.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-R4yEd1qo.css">
+    <script>
+      try {
+        const savedTheme = localStorage.getItem('text-compare-theme');
+        document.documentElement.dataset.theme = savedTheme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      } catch {
+        document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+    </script>
+    <script type="module" crossorigin src="./assets/index-CyN-_KAr.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-D9wzipsW.css">
   </head>
   <body>
     <div class="app-shell">
@@ -42,6 +50,7 @@
               <button id="swap-sides" class="quiet-button" type="button" title="Swap original and changed text"><span aria-hidden="true">⇄</span> Swap</button>
               <span class="action-divider"></span>
               <button id="save-comparison" class="quiet-button" type="button" title="Save this comparison to your local library"><span aria-hidden="true">♡</span> Save</button>
+              <button id="save-copy" class="quiet-button" type="button" title="Save a separate copy to your local library"><span aria-hidden="true">＋</span> Save as copy</button>
               <button id="share-comparison" class="quiet-button" type="button" title="Copy a link containing this comparison"><span aria-hidden="true">↗</span> Share</button>
               <div class="menu-wrap">
                 <button id="export-menu-toggle" class="quiet-button" type="button" aria-expanded="false" aria-controls="export-menu"><span aria-hidden="true">↓</span> Export <span class="chevron">⌄</span></button>
@@ -79,7 +88,7 @@
             <article class="editor-pane" data-side="left">
               <div class="pane-head">
                 <div class="pane-label-wrap"><span class="side-marker original-marker">A</span><input id="left-name" class="filename" type="text" value="original.txt" maxlength="180" aria-label="Original filename" /><span class="side-caption">ORIGINAL</span></div>
-                <div class="pane-tools"><span id="left-count" class="line-count">0 lines</span><input id="left-file" class="visually-hidden" type="file" accept=".txt,.md,.js,.ts,.jsx,.tsx,.json,.html,.css,.xml,.yaml,.yml,.py,.sh,.sql,.csv,.log,.diff,.java,.go,.rs,.c,.cpp,.h,.toml,.ini,.vue,.svelte,.php,.rb,.swift,.kt,.dart,.ipynb,text/*,application/json" /><button class="mini-button" data-file="left" type="button" title="Open a local text file"><span aria-hidden="true">↥</span> Open file</button><button class="mini-button copy-button" data-copy="left" type="button" title="Copy original text">Copy</button><button class="mini-icon" data-download="left" type="button" aria-label="Download original text" title="Download original text">↓</button><button class="mini-icon clear-side" data-clear="left" type="button" aria-label="Clear original text" title="Clear original text">×</button></div>
+                <div class="pane-tools"><span id="left-count" class="line-count">0 lines</span><input id="left-file" class="visually-hidden" type="file" accept=".txt,.md,.js,.ts,.jsx,.tsx,.json,.html,.css,.xml,.yaml,.yml,.py,.sh,.sql,.csv,.log,.diff,.java,.go,.rs,.c,.cpp,.h,.cs,.toml,.ini,.vue,.svelte,.php,.rb,.swift,.kt,.dart,.ipynb,text/*,application/json" /><button class="mini-button" data-file="left" type="button" title="Open a local text file"><span aria-hidden="true">↥</span> Open file</button><button class="mini-button copy-button" data-copy="left" type="button" title="Copy original text">Copy</button><button class="mini-icon" data-download="left" type="button" aria-label="Download original text" title="Download original text">↓</button><button class="mini-icon clear-side" data-clear="left" type="button" aria-label="Clear original text" title="Clear original text">×</button></div>
               </div>
               <div class="textarea-wrap"><textarea id="left-text" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="Original text" placeholder="Paste or type the original text here…"></textarea><div class="drop-overlay" aria-hidden="true"><span>Drop a text file to open</span></div></div>
               <div class="pane-foot"><span class="foot-hint"><kbd>⌘</kbd><kbd>↵</kbd> to compare</span><span id="left-size">0 characters</span></div>
@@ -90,7 +99,7 @@
             <article class="editor-pane" data-side="right">
               <div class="pane-head">
                 <div class="pane-label-wrap"><span class="side-marker changed-marker">B</span><input id="right-name" class="filename" type="text" value="changed.txt" maxlength="180" aria-label="Changed filename" /><span class="side-caption">CHANGED</span></div>
-                <div class="pane-tools"><span id="right-count" class="line-count">0 lines</span><input id="right-file" class="visually-hidden" type="file" accept=".txt,.md,.js,.ts,.jsx,.tsx,.json,.html,.css,.xml,.yaml,.yml,.py,.sh,.sql,.csv,.log,.diff,.java,.go,.rs,.c,.cpp,.h,.toml,.ini,.vue,.svelte,.php,.rb,.swift,.kt,.dart,.ipynb,text/*,application/json" /><button class="mini-button" data-file="right" type="button" title="Open a local text file"><span aria-hidden="true">↥</span> Open file</button><button class="mini-button copy-button" data-copy="right" type="button" title="Copy changed text">Copy</button><button class="mini-icon" data-download="right" type="button" aria-label="Download changed text" title="Download changed text">↓</button><button class="mini-icon clear-side" data-clear="right" type="button" aria-label="Clear changed text" title="Clear changed text">×</button></div>
+                <div class="pane-tools"><span id="right-count" class="line-count">0 lines</span><input id="right-file" class="visually-hidden" type="file" accept=".txt,.md,.js,.ts,.jsx,.tsx,.json,.html,.css,.xml,.yaml,.yml,.py,.sh,.sql,.csv,.log,.diff,.java,.go,.rs,.c,.cpp,.h,.cs,.toml,.ini,.vue,.svelte,.php,.rb,.swift,.kt,.dart,.ipynb,text/*,application/json" /><button class="mini-button" data-file="right" type="button" title="Open a local text file"><span aria-hidden="true">↥</span> Open file</button><button class="mini-button copy-button" data-copy="right" type="button" title="Copy changed text">Copy</button><button class="mini-icon" data-download="right" type="button" aria-label="Download changed text" title="Download changed text">↓</button><button class="mini-icon clear-side" data-clear="right" type="button" aria-label="Clear changed text" title="Clear changed text">×</button></div>
               </div>
               <div class="textarea-wrap"><textarea id="right-text" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="Changed text" placeholder="Paste or type the changed text here…"></textarea><div class="drop-overlay" aria-hidden="true"><span>Drop a text file to open</span></div></div>
               <div class="pane-foot"><span class="foot-hint">Drop a file anywhere in this panel</span><span id="right-size">0 characters</span></div>
@@ -100,19 +109,21 @@
           <details class="options-details" id="options-details">
             <summary><span class="settings-glyph" aria-hidden="true">☷</span> Comparison settings <span class="options-summary">Precision, formatting, and display</span><span class="summary-chevron">⌄</span></summary>
             <div class="options-panel">
-              <div class="options-group"><span class="option-label">MATCHING</span><label class="check-option"><input id="ignore-case" type="checkbox" /> Ignore case</label><label class="check-option"><input id="ignore-blank" type="checkbox" /> Ignore blank lines</label><label class="select-option">Whitespace <select id="whitespace"><option value="none">Exact</option><option value="trim">Trim line edges</option><option value="all">Ignore all whitespace</option></select></label></div>
+              <div class="options-group"><span class="option-label">MATCHING</span><label class="check-option"><input id="ignore-case" type="checkbox" /> Ignore case</label><label class="check-option"><input id="ignore-blank" type="checkbox" /> Ignore blank lines</label><label class="check-option"><input id="ignore-quotes" type="checkbox" /> Ignore quote marks</label><label class="check-option"><input id="ignore-dashes" type="checkbox" /> Ignore dash variants</label><label class="select-option">Whitespace <select id="whitespace"><option value="none">Exact</option><option value="trim">Trim line edges</option><option value="all">Ignore all whitespace</option></select></label></div>
               <div class="options-group"><span class="option-label">DETAIL</span><label class="select-option">Precision <select id="precision"><option value="smart">Smart</option><option value="word">Word</option><option value="character">Character</option></select></label><label class="select-option">Syntax <select id="language"><option value="plaintext">Plain text</option><option value="javascript">JavaScript</option><option value="typescript">TypeScript</option><option value="json">JSON</option><option value="html">HTML / XML</option><option value="css">CSS</option><option value="python">Python</option><option value="bash">Shell</option><option value="yaml">YAML</option><option value="markdown">Markdown</option><option value="sql">SQL</option><option value="java">Java</option><option value="go">Go</option><option value="rust">Rust</option><option value="c">C</option><option value="cpp">C++</option><option value="csharp">C#</option><option value="ruby">Ruby</option><option value="php">PHP</option><option value="swift">Swift</option><option value="kotlin">Kotlin</option></select></label></div>
               <div class="options-group display-options"><span class="option-label">DISPLAY</span><label class="check-option"><input id="wrap-lines" type="checkbox" /> Wrap long lines</label><label class="select-option">Text size <select id="font-size"><option value="13">Small</option><option value="14" selected>Medium</option><option value="16">Large</option></select></label></div>
-              <div class="options-group ignore-pattern-group"><label for="ignore-pattern" class="option-label">IGNORE PATTERN <span title="Regular expression applied to each line before matching">ⓘ</span></label><div class="pattern-row"><input id="ignore-pattern" type="text" placeholder="e.g. ^# generated at .*" autocapitalize="off" spellcheck="false" /><button id="clear-pattern" class="mini-icon" type="button" aria-label="Clear ignore pattern">×</button></div></div>
+              <div class="options-group ignore-pattern-group"><label for="ignore-pattern" class="option-label">IGNORE PATTERN <span title="Regular expression applied to each line before matching">ⓘ</span></label><div class="pattern-row"><input id="ignore-pattern" type="text" placeholder="e.g. ^# generated at .*" autocapitalize="off" spellcheck="false" /><button id="clear-pattern" class="mini-icon" type="button" aria-label="Clear ignore pattern">×</button></div><label for="ignore-values" class="option-label ignore-values-label">IGNORE LITERAL VALUES <span title="Each non-empty line is removed literally before comparison">ⓘ</span></label><textarea id="ignore-values" class="ignore-values" rows="3" placeholder="One value per line" autocapitalize="off" spellcheck="false"></textarea></div>
             </div>
           </details>
 
           <div class="compare-footer">
             <span id="work-status" role="status" aria-live="polite"><span class="status-dot"></span> Ready when you are</span>
+            <button id="cancel-comparison" class="quiet-button cancel-comparison" type="button" hidden>Cancel comparison</button>
             <button id="compare-now" class="primary-button" type="button"><span class="button-spark" aria-hidden="true">✳</span> Compare text <span class="button-shortcut">⌘ ↵</span></button>
           </div>
         </section>
 
+        <p id="print-warning" class="print-warning">The comparison needs to be refreshed. Close this print preview and choose Export → Print / Save as PDF to print the current text.</p>
         <section id="results-section" class="results-section" aria-labelledby="results-heading" hidden>
           <div class="results-heading-row">
             <div><div class="eyebrow result-eyebrow"><span class="eyebrow-line"></span> Your comparison</div><h2 id="results-heading">A closer look</h2></div>
@@ -126,6 +137,7 @@
             </div>
           </div>
           <div id="compare-summary" class="compare-summary"></div>
+          <div id="print-stale-warning" class="print-stale-warning" hidden>Refresh the comparison before printing. This page contains unsaved changes that are not in the result below.</div>
           <div id="diff-output" class="diff-output" aria-live="polite"></div>
           <div class="results-bottom"><span><span class="legend-mark removed-legend">−</span> Removed <span class="legend-mark added-legend">+</span> Added <span class="legend-mark changed-legend">∼</span> Changed</span><span>Use merge arrows to move a hunk across</span></div>
         </section>
@@ -133,8 +145,8 @@
       </main>
     </div>
 
-    <dialog id="library-dialog" class="library-dialog">
-      <div class="dialog-head"><div><span class="eyebrow"><span class="eyebrow-line"></span> Stored on this device</span><h2>Your library</h2></div><button class="icon-button dialog-close" type="button" aria-label="Close library">×</button></div>
+    <dialog id="library-dialog" class="library-dialog" aria-labelledby="library-title">
+      <div class="dialog-head"><div><span class="eyebrow"><span class="eyebrow-line"></span> Stored on this device</span><h2 id="library-title">Your library</h2></div><button class="icon-button dialog-close" type="button" aria-label="Close library">×</button></div>
       <p class="dialog-copy">Saved comparisons live in this browser only. Export a JSON copy to keep one elsewhere.</p>
       <div class="library-actions"><button id="import-comparison" class="mini-button" type="button"><span aria-hidden="true">↥</span> Import comparison</button><input id="import-file" class="visually-hidden" type="file" accept=".json,application/json" /></div>
       <div id="library-list" class="library-list"></div>
