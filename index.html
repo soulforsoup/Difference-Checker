@@ -14,8 +14,8 @@
         document.documentElement.dataset.theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       }
     </script>
-    <script type="module" crossorigin src="./assets/index-CyN-_KAr.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-D9wzipsW.css">
+    <script type="module" crossorigin src="./assets/index-BeruunSX.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-Cc8v8vrw.css">
   </head>
   <body>
     <div class="app-shell">
@@ -64,6 +64,25 @@
               </div>
             </div>
           </div>
+
+          <p id="print-warning" class="print-warning">The comparison needs to be refreshed. Close this print preview and choose Export → Print / Save as PDF to print the current text.</p>
+          <section id="results-section" class="results-section" aria-labelledby="results-heading" hidden>
+            <div class="results-heading-row">
+              <div><div class="eyebrow result-eyebrow"><span class="eyebrow-line"></span> Your comparison</div><h2 id="results-heading" tabindex="-1">A closer look</h2></div>
+              <div class="result-controls">
+                <button id="previous-hunk" class="control-button" type="button" title="Previous change"><span aria-hidden="true">↑</span><span>Previous</span></button><button id="next-hunk" class="control-button" type="button" title="Next change"><span aria-hidden="true">↓</span><span>Next change</span></button>
+                <span class="control-separator"></span>
+                <label class="check-option compact-check"><input id="changes-only" type="checkbox" /> Changes only</label>
+                <label class="check-option compact-check"><input id="hide-whitespace" type="checkbox" /> Hide whitespace changes</label>
+                <button id="collapse-context" class="control-button" type="button" aria-pressed="false"><span aria-hidden="true">⊞</span><span>Collapse context</span></button>
+                <div class="view-switch" role="group" aria-label="Result layout"><button type="button" class="active" data-view="split" aria-pressed="true">Split</button><button type="button" data-view="unified" aria-pressed="false">Unified</button></div>
+              </div>
+            </div>
+            <div id="compare-summary" class="compare-summary"></div>
+            <div id="print-stale-warning" class="print-stale-warning" hidden>Refresh the comparison before printing. This page contains unsaved changes that are not in the result below.</div>
+            <div id="diff-output" class="diff-output" aria-live="polite"></div>
+            <div class="results-bottom"><span><span class="legend-mark removed-legend">−</span> Removed <span class="legend-mark added-legend">+</span> Added <span class="legend-mark changed-legend">∼</span> Changed</span><span>Use merge arrows to move a hunk across</span></div>
+          </section>
 
           <div class="editor-toolbar">
             <div class="editor-heading"><span class="step-number">01</span><span>Choose your text</span><span class="editor-helper">Paste, type, or drop a file into either side</span></div>
@@ -123,24 +142,6 @@
           </div>
         </section>
 
-        <p id="print-warning" class="print-warning">The comparison needs to be refreshed. Close this print preview and choose Export → Print / Save as PDF to print the current text.</p>
-        <section id="results-section" class="results-section" aria-labelledby="results-heading" hidden>
-          <div class="results-heading-row">
-            <div><div class="eyebrow result-eyebrow"><span class="eyebrow-line"></span> Your comparison</div><h2 id="results-heading">A closer look</h2></div>
-            <div class="result-controls">
-              <button id="previous-hunk" class="control-button" type="button" title="Previous change"><span aria-hidden="true">↑</span><span>Previous</span></button><button id="next-hunk" class="control-button" type="button" title="Next change"><span aria-hidden="true">↓</span><span>Next change</span></button>
-              <span class="control-separator"></span>
-              <label class="check-option compact-check"><input id="changes-only" type="checkbox" /> Changes only</label>
-              <label class="check-option compact-check"><input id="hide-whitespace" type="checkbox" /> Hide whitespace changes</label>
-              <button id="collapse-context" class="control-button" type="button" aria-pressed="false"><span aria-hidden="true">⊞</span><span>Collapse context</span></button>
-              <div class="view-switch" role="group" aria-label="Result layout"><button type="button" class="active" data-view="split" aria-pressed="true">Split</button><button type="button" data-view="unified" aria-pressed="false">Unified</button></div>
-            </div>
-          </div>
-          <div id="compare-summary" class="compare-summary"></div>
-          <div id="print-stale-warning" class="print-stale-warning" hidden>Refresh the comparison before printing. This page contains unsaved changes that are not in the result below.</div>
-          <div id="diff-output" class="diff-output" aria-live="polite"></div>
-          <div class="results-bottom"><span><span class="legend-mark removed-legend">−</span> Removed <span class="legend-mark added-legend">+</span> Added <span class="legend-mark changed-legend">∼</span> Changed</span><span>Use merge arrows to move a hunk across</span></div>
-        </section>
         <footer class="page-footer"><span>Text Compare <span class="footer-dot">·</span> Runs entirely in your browser</span><span>Made for careful reading <span aria-hidden="true">✳</span></span></footer>
       </main>
     </div>

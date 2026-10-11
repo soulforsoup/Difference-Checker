@@ -9,3 +9,5 @@ Comparison and processing run in the browser. Saved comparisons and drafts live 
 PDF uses Export > Print / PDF and the browser print dialog. Native PDF output has not been verified in the build environment. AI explanations and cloud collaboration are not implemented.
 
 The matching source ZIP includes the GitHub Actions deployment workflow, 32 passing unit tests, 30 browser tests for CI, REA analysis notes, and a report of 119 passing live-browser assertions. See docs/VERIFICATION.md in that source ZIP for scope and remaining verification limits.
+
+Layout update: comparison results appear above the editors. Compare and Ctrl/Cmd+Enter bring the result into view; live comparison keeps focus in the editor.
